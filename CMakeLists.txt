@@ -4,3 +4,4 @@ project(Bitwisecalculator)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Bitwisecalculator main.cpp)
+add_executable(binaryconverter binaryconverter.cpp)
