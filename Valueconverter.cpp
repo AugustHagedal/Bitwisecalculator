@@ -18,21 +18,21 @@ void show_range(bool signed_mode, int bit_width) {
 
     if (bit_width >= 64) {
         if (signed_mode) {
-            int64_t min_signed = numeric_limits<int32_t>::min();
-            int64_t max_signed = numeric_limits<int32_t>::max();
+            int64_t min_signed = numeric_limits<int64_t>::min();
+            int64_t max_signed = numeric_limits<int64_t>::max();
             cout << "Signed Min: " << min_signed << " | Binary: ";
-            print_binary(static_cast<uint64_t>(min_signed), 32);
+            print_binary(static_cast<uint64_t>(min_signed), 64);
             cout << "\n";
             cout << "Signed Max: " << max_signed << " | Binary: ";
-            print_binary(static_cast<uint64_t>(max_signed), 32);
+            print_binary(static_cast<uint64_t>(max_signed), 64);
             cout << "\n";
         } else {
-            uint64_t max = UINT32_MAX;
+            uint64_t max = numeric_limits<uint64_t>::max();
             cout << "Unsigned Min: 0 | Binary: ";
-            print_binary(0, 32);
+            print_binary(0, 64);
             cout << "\n";
             cout << "Unsigned Max: " << max << " | Binary: ";
-            print_binary(max, 32);
+            print_binary(max, 64);
             cout << "\n";
         }
     } else {
@@ -95,21 +95,9 @@ void hex_to_binary(const string& hex, int bit_width) {
 }
 
 int main() {
-    bool signed_mode;
-    int bit_width, choice;
+    int choice;
     string input;
-
-    cout << "Choose mode (0 = unsigned, 1 = signed): ";
-    cin >> signed_mode;
-
-    cout << "Enter bit width (any positive number): ";
-    cin >> bit_width;
-    if (bit_width <= 0 || bit_width > 64) {
-        cout << "Invalid bit width. Must be between 1 and 64.\n";
-        return 1;
-    }
-
-    show_range(signed_mode, bit_width);
+    int64_t dec;
 
     cout << "Select conversion:\n";
     cout << "1. Decimal to Binary\n";
@@ -118,43 +106,62 @@ int main() {
     cout << "4. Binary to Hex\n";
     cout << "5. Hex to Decimal\n";
     cout << "6. Hex to Binary\n";
+    cout << "7. Show Unsigned Integer Range\n";
+    cout << "8. Show Signed Integer Range\n";
     cout << "Choice: ";
     cin >> choice;
 
-    int64_t dec;
-    switch (choice) {
-        case 1:
-            cout << "Enter decimal: ";
-            cin >> dec;
+    bool signed_mode = false;
+    int bit_width = 0;
+
+    if (choice >= 1 && choice <= 2) {
+        cout << "Enter bit width (1–64): ";
+        cin >> bit_width;
+        if (bit_width < 1 || bit_width > 64) {
+            cout << "Invalid bit width.\n";
+            return 1;
+        }
+        cout << "Enter decimal: ";
+        cin >> dec;
+
+        if (choice == 1)
             decimal_to_binary(dec, bit_width);
-            break;
-        case 2:
-            cout << "Enter decimal: ";
-            cin >> dec;
+        else
             decimal_to_hex(dec);
-            break;
-        case 3:
-            cout << "Enter binary: ";
-            cin >> input;
+    } else if (choice == 3 || choice == 4) {
+        cout << "Enter binary: ";
+        cin >> input;
+
+        if (choice == 3)
             binary_to_decimal(input);
-            break;
-        case 4:
-            cout << "Enter binary: ";
-            cin >> input;
+        else
             binary_to_hex(input);
-            break;
-        case 5:
-            cout << "Enter hex: ";
-            cin >> input;
+    } else if (choice == 5 || choice == 6) {
+        cout << "Enter hex: ";
+        cin >> input;
+
+        if (choice == 5)
             hex_to_decimal(input);
-            break;
-        case 6:
-            cout << "Enter hex: ";
-            cin >> input;
+        else {
+            cout << "Enter bit width (1–64): ";
+            cin >> bit_width;
+            if (bit_width < 1 || bit_width > 64) {
+                cout << "Invalid bit width.\n";
+                return 1;
+            }
             hex_to_binary(input, bit_width);
-            break;
-        default:
-            cout << "Invalid choice\n";
+        }
+    } else if (choice == 7 || choice == 8) {
+        signed_mode = (choice == 8);
+        cout << "Enter bit width (1–64): ";
+        cin >> bit_width;
+        if (bit_width < 1 || bit_width > 64) {
+            cout << "Invalid bit width.\n";
+            return 1;
+        }
+        show_range(signed_mode, bit_width);
+    } else {
+        cout << "Invalid choice.\n";
     }
 
     return 0;
