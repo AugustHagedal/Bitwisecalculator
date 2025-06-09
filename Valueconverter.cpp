@@ -80,7 +80,7 @@ void binary_to_hex(const string& bin) {
     int64_t dec = 0;
     for (char c : bin)
         dec = dec * 2 + (c - '0');
-    cout << hex << uppercase << dec << dec << "\n";
+    cout << hex << uppercase << dec << "\n";  // ✅ Correct
 }
 
 void hex_to_decimal(const string& hex) {
